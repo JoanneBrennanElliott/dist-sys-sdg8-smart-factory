@@ -1,14 +1,9 @@
-// proto/unary.proto 
-// Defines the RPC service contract (methods + message shapes). 
- 
 syntax = "proto3"; 
- 
 package unary; 
- 
 // My simple service with unary RPC method to check the status of a given machine. 
 
 service MachineStatusService {
-	rpc CheckMachineStatus (MachineRequest) returns (MachineResponse)
+	rpc CheckMachineStatus (MachineRequest) returns (MachineResponse);
 }
 
 // Request message
@@ -19,6 +14,6 @@ message MachineRequest {
 // Reply message
 message MachineResponse {
   string machineId = 1;
-boolean isRunning = 2;
+ bool isRunning = 2;
 string statusMessage = 3;
 } 
