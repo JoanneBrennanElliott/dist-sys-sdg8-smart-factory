@@ -1,25 +1,35 @@
-//Client code to be added here JBE
-//JBE unary client service CheckMachineStatus
 
+//JBE unary client service CheckMachineStatus
 
 // client.js
 
-var readlineSync = require('readline-sync')
 var grpc = require("@grpc/grpc-js")
 var protoLoader = require("@grpc/proto-loader")
 var PROTO_PATH = __dirname + "/proto/unary.proto"
 
-//var movies = grpc.loadPackageDefinition(packageDefinition).movies;
-//var machine = grpc.loadPackageDefinition(packageDefinition).unary;
-var unary = grpc.loadPackageDefinition(packageDefinition).unary;
 
-//  Implement service methods (unary signature: (call, callback)) 
-//function passing in machineID to do // CheckMachineStatus
+const packageDefinition = protoLoader.loadSync(PROTO_PATH, {});
+const grpcObj = grpc.loadPackageDefinition(packageDefinition);
+const service = grpcObj.unary.MachineStatusService;
 
-function main() {
-  const address = "127.0.0.1:50051";
 
- 
-}
+var client = new service(
+	"0.0.0.0:40000", 
+	grpc.credentials.createInsecure()
+	);
 
-main();
+//make unary request
+client.CheckMachineStatus (
+	{ machineId : "machine-01"},
+		(err, response) => {
+			if (err){
+				console.error("Error:",err);
+				return;
+				}
+	
+		console.log("Response:");
+		console.log("Machine: ", response.machineId);
+		console.log("Running: ", response.isRunning);
+		console.log("Status : ", response.statusMessage);
+	}
+);

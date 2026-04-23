@@ -1,37 +1,44 @@
 //JBE unary server service CheckMachineStatus
 
-var readlineSync = require('readline-sync')
-var grpc = require("@grpc/grpc-js")
-var protoLoader = require("@grpc/proto-loader")
-var PROTO_PATH = __dirname + "/proto/unary.proto"
+const grpc = require("@grpc/grpc-js");
+const protoLoader = require("@grpc/proto-loader");
+const PROTO_PATH = __dirname + "/proto/unary.proto";
 
-//var movies = grpc.loadPackageDefinition(packageDefinition).movies;
-//var machine = grpc.loadPackageDefinition(packageDefinition).unary;
-var unary = grpc.loadPackageDefinition(packageDefinition).unary;
+const packageDefinition = protoLoader.loadSync(PROTO_PATH, {});
+const grpcObj = grpc.loadPackageDefinition(packageDefinition);
+//console.log("grpcObj =", grpcObj);
+const service = grpcObj.unary.MachineStatusService;
 
-//  Implement service methods (unary signature: (call, callback)) 
-//function passing in machineID to do // CheckMachineStatus
+const server = new grpc.Server();
+server.addService(service.service, { 
+	CheckMachineStatus: checkMachineStatus 
+	});
 
-// 3) Create server and register service 
-function main() { 
-  const server = new grpc.Server(); 
+server.bindAsync(
+	"0.0.0.0:40000", 
+	grpc.ServerCredentials.createInsecure(), 
+	function() {
+		console.log("Server running on port 40000");
+		//server.start();
+	}
+);
+  
+//Implement service methods (unary signature: (call, callback)) 
+//function passing in a random machineID to Check Machine is operating
+
+function checkMachineStatus(call, callback) { 
+	const machineId = call.request.machineId;
+	
+	const isRunning = Math.random() > 0.3;
+	const statusMessage = isRunning? "Machine operational"  : "Machine stopped";
+	
+	callback (null, {
+		machineId,
+		isRunning,
+		statusMessage
+	});
+}
+
  
-  //server.addService(calcProto.Calculator.service, { 
- //  Add: add, 
-  //  Multiply: multiply, 
-  //}); 
- 
-  const address = "127.0.0.1:50051"; 
- 
-  // In production you would use TLS credentials. 
-  server.bindAsync(address, grpc.ServerCredentials.createInsecure(), (err) => { 
-    if (err) { 
-      console.error("Server bind error:", err); 
-      process.exit(1); 
-    } 
-    console.log("gRPC server listening on", address); 
-    server.start(); 
-  }); 
-} 
- 
-main(); 
+
+
