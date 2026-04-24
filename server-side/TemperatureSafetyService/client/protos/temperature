@@ -1,0 +1,23 @@
+syntax = "proto3"; 
+package temperature; 
+// My server side service with server side RPC method to check temp of a given sersor. 
+// Server streaming RPC:
+// client sends one request
+// server sends many responses
+
+
+service TemperatureSafetyService {
+	rpc MonitorTemperatureStatus(TemperatureRequest) returns (stream TemperatureResponse);
+}
+
+message TemperatureRequest {
+  string sensorId = 1;
+  double threshold = 2;
+}
+
+message TemperatureResponse {
+  string sensorId = 1;
+  double temperature = 2;
+ string statusMessage = 3;
+ string timestamp = 4;
+}
