@@ -1,8 +1,0 @@
-
-// stream TemperatureResponse – the server sends back multiple responses over time (this is my server-side streaming example)
-
-service TemperatureSafetyService {
-
-Rpc RpcMonitorTempRequest(TemperatureRequest) returns (stream TemperatureResponse);
-
-}
