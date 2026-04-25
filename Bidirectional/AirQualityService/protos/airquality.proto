@@ -1,0 +1,23 @@
+syntax = "proto3"; 
+package airquality; 
+
+// My bidirectional RPC method to check air quality
+// client sends many request
+// server sends many responses
+
+service AirQualityService {
+rpc MonitorAirQuality (stream AirRequest) returns (stream AirResponse);
+}
+
+message AirRequest {
+  string sensorId = 1;
+double co2Level= 2;
+ string timestamp = 3;
+}
+
+message AirResponse {
+  string sensorID = 1;
+string status = 2;
+string recommendation = 3;
+ string timestamp = 4;
+}
