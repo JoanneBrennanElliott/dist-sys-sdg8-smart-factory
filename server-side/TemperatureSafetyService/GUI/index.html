@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<!--Client-Server -->
+
+<html>
+<head>
+  <title>Smart Factory – Temperature Safety Status</title>
+  <style>
+    body {
+    font-family: Arial, sans-serif;
+    background: #f0f2f5;
+    margin: 40px;
+    justify-content: center;
+}
+	h2 {
+    margin-bottom: 12px;
+    font-size: 20px;
+    color: #333;
+    text-align: left;
+}
+.box {
+    width: 380px;
+    padding: 20px;
+    background: #ffffff;
+    border: 1px solid #d0d0d0;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+	
+	button:hover {
+    background: ##555555;
+}
+    .output { 
+	margin-top: 15px; 
+	padding: 10px; 
+	background: #f5f5f5; 
+	min-height: 40px; }
+  </style>
+</head>
+
+<body>
+  <div><h2>Temperature Safety Service (Client-Server)</h2> </div>
+
+  <div class="box">
+  
+     <!-- Sensor ID Input -->
+    <label for="sensorIdInput">Sensor ID:</label>
+    <input type="text" id="sensorIdInput" placeholder="e.g., AC-GroundFloor">
+
+    <!-- Threshold Input -->
+    <label for="thresholdInput">Threshold (°C):</label>
+	<input type="number" id="thresholdInput" autocomplete="off">
+
+    <!-- Button -->
+    <button onclick="invokeClientServer()"> Temperature Check</button>
+    <div id="output" class="output"></div>
+  </div>
+
+  <script src="client_browser.js"></script>
+</body>
+</html>
