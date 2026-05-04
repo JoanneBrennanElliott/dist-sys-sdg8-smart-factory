@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package naming;
+
+service NamingService {
+  rpc Register(ServiceInfo) returns (RegisterResponse);
+  rpc Discover(ServiceQuery) returns (ServiceInfo);
+}
+
+message ServiceInfo {
+  string name = 1;
+  string address = 2; // e.g. "air-service:40000"
+}
+
+message ServiceQuery {
+  string name = 1;
+}
+
+message RegisterResponse {
+  string message = 1;
+}
