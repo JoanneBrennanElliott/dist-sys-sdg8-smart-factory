@@ -6,9 +6,16 @@ const grpc = require("@grpc/grpc-js");
 const protoLoader = require("@grpc/proto-loader");
 const PROTO_PATH = __dirname + "/protos/temperature.proto";
 
-const packageDefinition = protoLoader.loadSync(PROTO_PATH, {});
+//const packageDefinition = protoLoader.loadSync(PROTO_PATH, {});
+const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
+  keepCase: true,
+  longs: String,
+  enums: String,
+  defaults: true,
+  oneofs: true
+});
 const grpcObj = grpc.loadPackageDefinition(packageDefinition);
-//console.log("grpcObj =", grpcObj);
+//console.log("grpcObj =", grpcObj);   // for testing
 const service = grpcObj.temperature.TemperatureSafetyService;
 
 //loads my NamingService definitions.
@@ -79,7 +86,7 @@ function MonitorTemperatureStatus(call) {
 	const token = metadata["authorization"];
 	const traceId = metadata["trace-id"];
 	const clientId = metadata["client-id"];
-	console.log("Metadata received:", metadata);
+	console.log("Metadata received:", metadata);    // for testing purposes 
 
 
   //Authentication check
@@ -113,32 +120,29 @@ function MonitorTemperatureStatus(call) {
 	const interval = setInterval(() => {
 		
 	try {
-      // Simulate internal server error
-      if (Math.random() < 0.05) {
-        throw new Error("Temperature sensor read failure");
-      }
-			const temperature = generateTemperature();
-			//const now = new Date().toISOString();
-			const timestamp = CurrentTimestamp();
-			
-			let status = "";
-			if (temperature > threshold + 5) {
-			  status = "CRITICAL: Temperature far above safe threshold. Immediate action required.";
-			} else if (temperature > threshold) {
-			  status = "WARNING: Temperature above threshold. Reduce load or cool system.";
-			} else if (temperature >= threshold - 3) {
-			  status = "OK: Operating within acceptable bandwidth.";
-			} else {
-			  status = "Stable: Temperature well below threshold.";
-			}
+		const temperature = generateTemperature();
+		//const now = new Date().toISOString();
+		const timestamp = CurrentTimestamp();
+		
+		let status = "";
+		if (temperature > threshold + 5) {
+		  status = "CRITICAL: Temperature far above safe threshold. Immediate action required.";
+		} else if (temperature > threshold) {
+		  status = "WARNING: Temperature above threshold. Reduce load or cool system.";
+		} else if (temperature >= threshold - 3) {
+		  status = "OK: Operating within acceptable bandwidth.";
+		} else {
+		  status = "Stable: Temperature well below threshold.";
+		}
 
-			call.write ( {sensorId, temperature: temperature, statusMessage: status, timestamp});
+		call.write ( {sensorId, temperature: temperature, statusMessage: status, timestamp});
 
-			count++;
-			if (count === 10) {
-			  clearInterval(interval);
-			  call.end();
-			}
+		count++;
+		if (count === 10) {
+		  clearInterval(interval);
+		  call.end();
+		}
+		
 		} catch (err) {
 		  clearInterval(interval);
 		  console.error("Internal error:", err.message);
