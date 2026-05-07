@@ -6,8 +6,12 @@
 
 var grpc = require("@grpc/grpc-js")
 var protoLoader = require("@grpc/proto-loader")
-var PROTO_PATH = __dirname + "/protos/temperature.proto"
 
+const path = require("path");
+const PROTO_PATH = path.join(
+  __dirname,
+  "../server/protos/temperature.proto"
+);
 
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {});
 const grpcObj = grpc.loadPackageDefinition(packageDefinition);
@@ -21,8 +25,13 @@ const service = grpcObj.temperature.TemperatureSafetyService;
 //	);
 
 // Load naming.proto
-const path = require("path");
-const NAMING_PROTO_PATH = path.join(__dirname, "/protos/protos/naming.proto");
+//const path = require("path");
+const NAMING_PROTO_PATH = path.join(__dirname, "../server/protos/protos/naming.proto");
+
+console.log("DIR:", __dirname);
+console.log("PROTO_PATH:", PROTO_PATH);
+console.log("NAMING PATH:", NAMING_PROTO_PATH);
+
 const namingDef = protoLoader.loadSync(NAMING_PROTO_PATH, {});
 const namingObj = grpc.loadPackageDefinition(namingDef);
 const namingService = namingObj.naming.NamingService;
@@ -118,12 +127,6 @@ stream.on("error", (err) => {
   }
 });
 	
-//stream.on("data", (res) => {
- // console.log(
-  //  `[${res.timestamp}] Sensor ${res.sensorId} | Temp: ${res.temperature.toFixed(2)}°C | Status: ${res.statusMessage}`
-  //);
-//});
-
 stream.on("end", () => {
   console.log("Client Side Monitoring Completed.");
 });
