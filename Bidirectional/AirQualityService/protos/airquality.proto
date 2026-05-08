@@ -16,7 +16,7 @@ double co2Level= 2;
 }
 
 message AirResponse {
-  string sensorID = 1;
+  string sensorId = 1;
 string status = 2;
 string recommendation = 3;
  string timestamp = 4;
