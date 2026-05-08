@@ -60,6 +60,14 @@ function MonitorAirQuality(call) {
 	const traceId = metadata["trace-id"];
 	const clientId = metadata["client-id"];
 	console.log("Metadata received:", metadata);
+	
+	//Authentication check
+	if (!token || token !== "Bearer TOKEN_123") {
+		return callback({
+		code: grpc.status.UNAUTHENTICATED,
+		message: "Invalid or missing authentication token"
+		});
+	}
 
   call.on("data", (req) => {
 	  
