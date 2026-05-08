@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="UTF-8">
+  <title>CO₂ Monitor (Bidirectional)</title>
+  <style>
+    body { font-family: Arial; margin: 20px; }
+    #output { 
+      width: 80%; 
+      height: 450px; 
+      border: 1px solid #ccc; 
+      border-radius: 6px;
+      padding: 10px; 
+      overflow-y: scroll; 
+      background: #fafafa;
+    }
+
+    .status-good { color: green; font-weight: bold; }
+    .status-danger { color: red; font-weight: bold; }
+
+  </style>
+</head>
+<body>
+
+<h2>CO₂ Monitor – Bidirectional Streaming</h2>
+
+<button onclick="startStream()">Start Streaming</button>
+<button onclick="stopStream()">Stop Streaming</button>
+
+<h3>Live Output</h3>
+<div id="output">Waiting for data…</div>
+
+<script src="client_browser.js"></script>
+</body>
+</html>
