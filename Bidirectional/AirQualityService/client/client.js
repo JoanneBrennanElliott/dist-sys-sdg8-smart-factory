@@ -8,7 +8,13 @@
 const grpc = require("@grpc/grpc-js");
 const protoLoader = require("@grpc/proto-loader");
 
-const PROTO_PATH = __dirname + "/protos/airquality.proto";
+const path = require("path");
+const PROTO_PATH = path.join(
+  __dirname,
+  "../server/protos/airquality.proto"
+);
+
+//const PROTO_PATH = __dirname + "/protos/airquality.proto";   // update to run from server folder
 const packageDef = protoLoader.loadSync(PROTO_PATH, {});
 const grpcObj = grpc.loadPackageDefinition(packageDef);
 const service = grpcObj.airquality.AirQualityService;
@@ -16,8 +22,16 @@ const service = grpcObj.airquality.AirQualityService;
 //const client = new service("localhost:50051", grpc.credentials.createInsecure());
 //add the Discovery Step
 // Load naming.proto
-const path = require("path");
-const NAMING_PROTO_PATH = path.join(__dirname, "/protos/protos/naming.proto");
+//const path = require("path");
+
+
+//const NAMING_PROTO_PATH = path.join(__dirname, "/protos/protos/naming.proto");
+const NAMING_PROTO_PATH = path.join(__dirname, "../server/protos/protos/naming.proto");
+
+//console.log("DIR:", __dirname);     //testing
+//console.log("PROTO_PATH:", PROTO_PATH);
+//console.log("NAMING PATH:", NAMING_PROTO_PATH);
+
 const namingDef = protoLoader.loadSync(NAMING_PROTO_PATH, {});
 const namingObj = grpc.loadPackageDefinition(namingDef);
 const namingService = namingObj.naming.NamingService;
