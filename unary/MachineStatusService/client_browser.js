@@ -9,43 +9,34 @@ window.invokeUnary = async function () {
     return;
   }
 
-  const res = await fetch("http://localhost:3000/checkMachineStatus", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ machineId })
-  });
+   let data;  
 
-  const data = await res.json();
+    try {
+    const response = await fetch("http://localhost:3000/checkMachineStatus", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+ 	 body: JSON.stringify({ machineId })
+	  });
+		
+	console.log("Fetch completed. Response status:", response.status);    // for testing purposes 
 
-  if (data.error) {
-    output.innerHTML = `<b>Error:</b> ${data.error}`;
-    return;
-  }
+	const data = await response.json();
+	console.log("Received data:", data);    // for testing purposes 
+	
+	if (!data || data.error	=== 0) {
+	  output.innerHTML = "<b>No data received from server.</b>";
+	  return;
+	}
 
   output.innerHTML = `
     <b>Machine ID:</b> ${data.machineId}<br>
     <b>Running:</b> ${data.isRunning}<br>
     <b>Status:</b> ${data.statusMessage}
   `;
+  
+  }catch (err) {
+		console.error("Fetch error:", err);
+		output.innerHTML = "<b> Error conacting server</b> " + err.message;
+		 return;
+	}
 };
-
-
-
-
-
-//	window.invokeUnary = function () {
-//	//	document.getElementById("output").innerHTML = "some text";
-//	  const machineId = document.getElementById("machineIdInput").value;
-//	  const output = document.getElementById("output");
-//
-//	  if (!machineId) {
-//		output.innerHTML = "<b>Error:</b> Machine ID is required.";
-//		return;
-//	  }
-//	output.innerHTML = `
-//		<b>Machine ID:</b> ${machineId}<br>
-//		<b>Status    :   Good</b>  `;
-//		//<b>Running:</b> ${isRunning}<br>
-//		//<b>Status:</b> ${statusMessage}
-//	};
-
