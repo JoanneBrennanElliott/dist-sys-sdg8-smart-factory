@@ -63,20 +63,24 @@ function MonitorAirQuality(call) {
 	
 	//Authentication check
 	if (!token || token !== "Bearer TOKEN_123") {
-		return callback({
-		code: grpc.status.UNAUTHENTICATED,
-		message: "Invalid or missing authentication token"
+		call.emit("error", {
+			code: grpc.status.UNAUTHENTICATED,
+			message: "Invalid or missing authentication token"
 		});
+		return;
 	}
 
   call.on("data", (req) => {
+
+       console.log("Server Received Sensor:", req.sensorId);
+       console.log("Server Received CO2:", req.co2Level);
 	  
 	// Check for Valid inputs 
     if (!isValidReading(req)) {
       console.warn("Invalid reading received:", req);
 
       call.write({
-        sensorID: req.sensorId || "UNKNOWN",
+        sensorId: req.sensorId || "UNKNOWN",
         status: "INVALID",
         recommendation: "Reading rejected due to invalid or missing fields.",
         timestamp: CurrentTimestamp(),
@@ -120,7 +124,7 @@ function MonitorAirQuality(call) {
 	}
 	
     call.write({
-      sensorID: sensorId,
+      sensorId,
       status,
       recommendation,
 	  timestamp : CurrentTimestamp(),
@@ -155,7 +159,7 @@ function main() {
   server.addService(service.service, { MonitorAirQuality });
   server.bindAsync("0.0.0.0:50051", grpc.ServerCredentials.createInsecure(), () => {
     console.log("AirQualityService running on port 50051");
-   // server.start();
+    server.start();
   });
 }
 
